@@ -109,7 +109,7 @@ python predict_organ_amos.py --ratio 50
 ```bibtex
 @inproceedings{zhao2024guidednet,
   title={GuidedNet: Semi-Supervised Multi-Organ Segmentation via Labeled Data Guide Unlabeled Data},
-  author={Zhao, Haochen and Meng, Hui and Yang, Deqian and Wu, Xiaoze and Li, Qingfeng and Niu, Jianwei and others},
+  author={Zhao, Haochen and Meng, Hui and Yang, Deqian and Xie, Xiaozheng and Wu, Xiaoze and Li, Qingfeng and Niu, Jianwei and others},
   booktitle={ACM Multimedia 2024},
   year={2024}
 }
