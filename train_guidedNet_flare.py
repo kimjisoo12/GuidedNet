@@ -8,13 +8,11 @@ import numpy as np
 import torch
 import torch.backends.cudnn as cudnn
 import torch.nn as nn
-import torch.nn.functional as F
 import torch.optim as optim
 from tensorboardX import SummaryWriter
 from torch.nn.modules.loss import CrossEntropyLoss
 from torch.utils.data import DataLoader
 from torchvision import transforms
-from torchvision.utils import make_grid
 from tqdm import tqdm
 from dataloaders.brats2019 import (BraTS2019, RandomCrop, RandomRotFlip, ToTensor, TwoStreamBatchSampler)
 from net_factory_3d import net_factory_3d
@@ -53,7 +51,7 @@ def EMA(cur_weight, past_weight, momentum=0.9):
     new_weight = momentum * past_weight + (1 - momentum) * cur_weight
     return new_weight
 
-class DistDW:
+class KTCPS:
     def __init__(self, num_cls, do_bg=False, momentum=0.95):
         self.num_cls = num_cls
         self.do_bg = do_bg
@@ -172,7 +170,6 @@ def train(args, snapshot_path,):
 
     iter_num = 0
 
-    from torch.nn import MSELoss
     ce_loss = CrossEntropyLoss()
     dice_loss = losses.DiceLoss(num_classes)
 
@@ -182,9 +179,9 @@ def train(args, snapshot_path,):
     max_epoch = max_iterations // len(trainloader) + 1
     iterator = tqdm(range(max_epoch), ncols=70)
 
-    distdw = DistDW(num_classes, momentum=0.99) 
-    weight_A = distdw.init_weights(trainloader)
-    weight_B = distdw.init_weights(trainloader)
+    ktcps = KTCPS(num_classes, momentum=0.99) 
+    weight_A = ktcps.init_weights(trainloader)
+    weight_B = ktcps.init_weights(trainloader)
     
     start_time = time.time()
     for epoch_num in iterator:
@@ -248,8 +245,8 @@ def train(args, snapshot_path,):
             consistency_loss = consistency_weight *torch.mean((res1_soft - res2_soft)**2)
 
             # kt-cps
-            weight_A = distdw.get_ema_weights(outputs1[:args.labeled_bs].detach(), label_batch[:args.labeled_bs].detach())
-            weight_B = distdw.get_ema_weights(outputs2[:args.labeled_bs].detach(),label_batch[:args.labeled_bs].detach())
+            weight_A = ktcps.get_ema_weights(outputs1[:args.labeled_bs].detach(), label_batch[:args.labeled_bs].detach())
+            weight_B = ktcps.get_ema_weights(outputs2[:args.labeled_bs].detach(),label_batch[:args.labeled_bs].detach())
 
             weight_A = weight_A.cpu().numpy()
             weight_B = weight_B.cpu().numpy()
