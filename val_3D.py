@@ -1,18 +1,9 @@
 import math
 from glob import glob
-
 import h5py
-import nibabel as nib
 import numpy as np
-import SimpleITK as sitk
 import torch
-import torch.nn.functional as F
 from medpy import metric
-from tqdm import tqdm
-
-import threading
-import random
-
 
 def test_single_case(net, image, stride_xy, stride_z, patch_size, num_classes=1):
     w, h, d = image.shape
@@ -65,7 +56,7 @@ def test_single_case(net, image, stride_xy, stride_z, patch_size, num_classes=1)
                     y1 = net(test_patch)
                     # ensemble
                     y = torch.softmax(y1['pred'], dim=1)
-                    # y = torch.softmax(y1[0], dim=1)  magicnet用这行代码
+                    # y = torch.softmax(y1[0], dim=1)  
                 y = y.cpu().data.numpy()
                 y = y[0, :, :, :, :]
                 score_map[:, xs:xs+patch_size[0], ys:ys+patch_size[1], zs:zs+patch_size[2]] \
@@ -90,27 +81,7 @@ def cal_metric(gt, pred):
         return np.array([dice, hd95])
     else:
         return np.zeros(2)
-
-
-
-
-
-
-# 定义一个MyThread.py线程类
-class MyThread(threading.Thread):
-    def __init__(self, func, args=()):
-        super(MyThread, self).__init__()
-        self.func = func
-        self.args = args
-    def run(self):
-        self.result = self.func(*self.args)
-    def get_result(self):
-        threading.Thread.join(self)  # 等待线程执行完毕
-        try:
-            return self.result
-        except Exception:
-            return None
-
+    
 def test_single_case_batch(namesi, net, stride_xy, stride_z, patch_size, num_classes):
     total_metric = np.zeros((num_classes - 1, 2))
 
@@ -132,46 +103,3 @@ def test_all_case(net, base_dir, test_list="full_test.list", num_classes=4, patc
         image_list = f.readlines()
     image_list = [base_dir + "/{}/2022.h5".format(
         item.replace('\n', '').split(",")[0]) for item in image_list]
-
- # 使用random.shuffle()来随机打乱原始列表
-    random.shuffle(image_list)
-
-#将列表分成两组，每组包含15个元素
-    group1 = image_list[:2]
-    group2 = image_list[2:4]
-    group3 = image_list[4:6]
-    group4 = image_list[6:8]
-    group5 = image_list[8:10]
-    group6 = image_list[10:12]
-    group7 = image_list[12:]
-
-    more_th1 = MyThread(test_single_case_batch,(group1, net, stride_xy, stride_z, patch_size, num_classes))
-    more_th2 = MyThread(test_single_case_batch, (group2, net, stride_xy, stride_z, patch_size, num_classes))
-    more_th3 = MyThread(test_single_case_batch, (group3, net, stride_xy, stride_z, patch_size, num_classes))
-    more_th4 = MyThread(test_single_case_batch, (group4, net, stride_xy, stride_z, patch_size, num_classes))
-    more_th5 = MyThread(test_single_case_batch, (group5, net, stride_xy, stride_z, patch_size, num_classes))
-    more_th6 = MyThread(test_single_case_batch, (group6, net, stride_xy, stride_z, patch_size, num_classes))
-    more_th7 = MyThread(test_single_case_batch, (group7, net, stride_xy, stride_z, patch_size, num_classes))
-
-    more_th1.start()
-    more_th2.start()
-    more_th3.start()
-    more_th4.start()
-    more_th5.start()
-    more_th6.start()
-    more_th7.start()
-
-
-    more_th1.join()
-    more_th2.join()
-    more_th3.join()
-    more_th4.join()
-    more_th5.join()
-    more_th6.join()
-    more_th7.join()
-
-    total_metric = more_th1.get_result() + more_th2.get_result()+ more_th3.get_result()\
-                   + more_th4.get_result()+ more_th5.get_result()+ more_th6.get_result()+ more_th7.get_result()
-
-
-    return total_metric / (len(image_list)/2)
