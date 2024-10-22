@@ -119,3 +119,6 @@ python predict_organ_amos.py --ratio 50
 ## Contact
 
 - studyzhao@buaa.edu.cn
+
+## Poster
+![](https://github.com/kimjisoo12/GuidedNet/blob/main/poster.jpg)
