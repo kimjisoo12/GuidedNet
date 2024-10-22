@@ -11,7 +11,6 @@ import random
 from scipy import ndimage
 from scipy.ndimage.interpolation import zoom
 
-from matplotlib import pyplot as plt
 class BraTS2019(Dataset):
     """ BraTS2019 Dataset """
 
@@ -20,12 +19,8 @@ class BraTS2019(Dataset):
         self.transform = transform
         self.sample_list = []
 
-        self.weight = None
-        self.num_cls = 8 #14
-
         train_path = self._base_dir+'/train.txt'
         test_path = self._base_dir+'/val.txt'
-        train_full_path = self._base_dir + '/train_full.txt'
 
         if split == 'train':
             with open(train_path, 'r') as f:
@@ -33,28 +28,11 @@ class BraTS2019(Dataset):
         elif split == 'test':
             with open(test_path, 'r') as f:
                 self.image_list = f.readlines()
-        elif split == 'train_full':
-            with open(train_full_path, 'r') as f:
-                self.image_list = f.readlines()
 
         self.image_list = [item.replace('\n', '').split(",")[0] for item in self.image_list]
         if num is not None:
             self.image_list = self.image_list[:num]
         print("total {} samples".format(len(self.image_list)))
-
-        weight = np.zeros(self.num_cls)
-        ids_list = self.image_list[:42]  #42
-        for data_id in ids_list:
-            h5f = h5py.File(self._base_dir + "/{}/2022.h5".format(data_id), 'r')
-            label = h5f['label'][:]
-            # label = self._get_data(data_id)
-            label = label.reshape(-1)
-            tmp, _ = np.histogram(label, range(self.num_cls + 1))
-            weight += tmp
-
-        weight = weight.astype(np.float32)
-        weight = weight / np.sum(weight)
-        self.weight = np.power(np.amax(weight) / weight, 1 /5)  #1/5
 
     def __len__(self):
         return len(self.image_list)
