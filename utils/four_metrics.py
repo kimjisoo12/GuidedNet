@@ -4,17 +4,7 @@ import SimpleITK as sitk
 from medpy import metric
 
 def dice_coefficient(prediction, target, num_classes):
-    """
-    计算每个类别的平均Dice指标。
-
-    参数：
-    prediction (np.ndarray) - 预测的分割图像，每个像素包含一个类别的标签。
-    target (np.ndarray) - 目标分割图像，每个像素包含一个类别的标签。
-    num_classes (int) - 类别的数量。
-
-    返回：
-    dice_scores (list) - 每个类别的Dice指标值。
-    """
+    
     dice_scores = []
 
     for class_id in range(1, num_classes + 1):
@@ -41,8 +31,6 @@ def dice_coefficient(prediction, target, class_num = 14):
         dice_cls = metric.binary.dc(prediction == (i + 1), target == (i + 1))
         dice_coefficient.append(dice_cls)
 
-
-
     return dice_coefficient
 
 
@@ -59,7 +47,6 @@ def jaccard_coefficient(prediction, target, slice,class_num = 14 ):
 
     return sum(jaccard_coefficient)/len(jaccard_coefficient)
 
-# 示例用法
 def calculate_metrics(pred_folder, label_folder):
     pred_files = [os.path.join(pred_folder, file) for file in os.listdir(pred_folder)]
     label_files = [os.path.join(label_folder, file) for file in os.listdir(label_folder)]
@@ -84,12 +71,10 @@ def calculate_metrics(pred_folder, label_folder):
     dice_lists['dice12'] = []
     dice_lists['dice13'] = []
 
-
     for pred_path, label_path in zip(pred_files, label_files):
         pred = sitk.GetArrayFromImage(sitk.ReadImage(pred_path))
         label = sitk.GetArrayFromImage(sitk.ReadImage(label_path))
-
-
+        
         dice_scores = dice_coefficient(pred, label, 14)
         accuracy_lists.append(dice_scores)
         for class_id, dice_score in enumerate(dice_scores, start=1):
@@ -113,8 +98,6 @@ def calculate_metrics(pred_folder, label_folder):
     print(dice_lists['dice12'])
     print(dice_lists['dice13'])
 
-
-
     for accuracy_list in accuracy_lists:
         for class_id in range(13):
             class_accuracy[class_id] += accuracy_list[class_id]
@@ -122,7 +105,7 @@ def calculate_metrics(pred_folder, label_folder):
     # 计算每个类别的平均精度
     average_accuracy = [acc / num_samples for acc in class_accuracy]
 
-    average_accuracy[8] = average_accuracy[8] * 14 / 10  #flare     #吴亦凡
+    average_accuracy[8] = average_accuracy[8] * 14 / 10  
 
     avg_jaccard = np.mean(jaccard_scores)
 
