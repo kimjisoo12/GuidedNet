@@ -28,8 +28,8 @@ git clone https://github.com/kimjisoo12/GuidedNet.git
 cd GuidedNet
 mkdir data # create data path
 ```
-2. Put the preprocessed data in ./data/flare for FLARE22 dataset. (./data/amos for AMOS dataset) and then cd code.
-3. We train our model on two NVIDIA A100 GPUs for each dataset.
+2. Put the preprocessed data and split.txt in ./data/flare for FLARE22 dataset. (./data/amos for AMOS dataset) and then cd code.
+3. We train our model on two NVIDIA A100 GPUs (40G) for each dataset.
 
 To produce the claimed results for FLARE22 dataset:
 ```
