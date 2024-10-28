@@ -101,5 +101,17 @@ def test_single_case_batch(namesi, net, stride_xy, stride_z, patch_size, num_cla
 def test_all_case(net, base_dir, test_list="full_test.list", num_classes=4, patch_size=(48, 160, 160), stride_xy=32, stride_z=24):
     with open(base_dir + '/{}'.format(test_list), 'r') as f:
         image_list = f.readlines()
-    image_list = [base_dir + "/{}/2022.h5".format(
-        item.replace('\n', '').split(",")[0]) for item in image_list]
+    image_list = [base_dir + "/{}/2022.h5".format(      
+        item.replace('\n', '').split(",")[0]) for item in image_list]    # mri_norm2 2022.h5
+    total_metric = np.zeros((num_classes-1, 2))
+    print("Validation begin")
+    for image_path in tqdm(image_list):
+        h5f = h5py.File(image_path, 'r')
+        image = h5f['image'][:]
+        label = h5f['label'][:]
+        prediction = test_single_case(
+            net, image, stride_xy, stride_z, patch_size, num_classes=num_classes)
+        for i in range(1, num_classes):
+            total_metric[i-1, :] += cal_metric(label == i, prediction == i)
+    print("Validation end")
+    return total_metric / len(image_list)
