@@ -52,7 +52,7 @@ CUDA_VISIBLE_DEVICES=0,1 python train_guidedNet_amos.py --model 'guidedNet' --ma
 ```
 ###  Checkpoints
 
-Test data, label, checkpoints can be found [here](https://pan.baidu.com/s/1K3IDYcdtCaZZZME1iJRjaw?pwd=3h3n) , Fetch Code: 3h3n
+Test data, label, checkpoints can be found [here](https://pan.baidu.com/s/1sLXk7eb6NuYdtSJw0FBOfg?pwd=4t9i) , Fetch Code: 4t9i 
 
 ###  Infer
 
