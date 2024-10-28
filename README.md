@@ -19,7 +19,7 @@ This repository is based on PyTorch 1.7.1, CUDA 10.1 and Python 3.9.7; All exper
 
 ### Dataset 
 The datasets used in our paper are [FLARE22 dataset](https://arxiv.org/abs/2308.05862) and [AMOS dataset](https://arxiv.org/abs/2206.08023). 
-Preprocessed data can be found [here](https://pan.baidu.com/s/1YISYVgZow2NpEYUlV6J8Dw) , Fetch Code: kaf6.
+Preprocessed data can be found [here](https://pan.baidu.com/s/1aUDUu3iVfrlrVidcJmOkcg?pwd=1fvb) , Fetch Code: 1fvb.
 
 ### Training Steps
 1. Clone the repo and create data path:
