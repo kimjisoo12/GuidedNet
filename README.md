@@ -108,11 +108,21 @@ python predict_organ_amos.py --ratio 50
 
 ## Citation
 ```bibtex
-@inproceedings{zhao2024guidednet,
-  title={GuidedNet: Semi-Supervised Multi-Organ Segmentation via Labeled Data Guide Unlabeled Data},
-  author={Zhao, Haochen and Meng, Hui and Yang, Deqian and Xie, Xiaozheng and Wu, Xiaoze and Li, Qingfeng and Niu, Jianwei and others},
-  booktitle={ACM Multimedia 2024},
-  year={2024}
+@inproceedings{10.1145/3664647.3681526,
+author = {Zhao, Haochen and Meng, Hui and Yang, Deqian and Xie, Xiaozheng and Wu, Xiaoze and Li, Qingfeng and Niu, Jianwei},
+title = {GuidedNet: Semi-Supervised Multi-Organ Segmentation via Labeled Data Guide Unlabeled Data},
+year = {2024},
+isbn = {9798400706868},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/3664647.3681526},
+doi = {10.1145/3664647.3681526},
+booktitle = {Proceedings of the 32nd ACM International Conference on Multimedia},
+pages = {886–895},
+numpages = {10},
+keywords = {3d medical image segmentation, abdominal organs, gaussian mixture model, semi-supervised learning},
+location = {Melbourne VIC, Australia},
+series = {MM '24}
 }
 ```
 
