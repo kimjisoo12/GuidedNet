@@ -130,5 +130,3 @@ series = {MM '24}
 
 - studyzhao@buaa.edu.cn
 
-## Poster
-![](https://github.com/kimjisoo12/GuidedNet/blob/main/poster.png)
