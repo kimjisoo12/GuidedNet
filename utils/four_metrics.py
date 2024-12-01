@@ -3,27 +3,6 @@ import os
 import SimpleITK as sitk
 from medpy import metric
 
-def dice_coefficient(prediction, target, num_classes):
-    
-    dice_scores = []
-
-    for class_id in range(1, num_classes + 1):
-        # 创建二值掩码以选择当前类别
-        prediction_mask = (prediction == class_id)
-        target_mask = (target == class_id)
-
-        # 计算相交和合并的像素数
-        intersection = np.logical_and(prediction_mask, target_mask).sum()
-        union = np.logical_or(prediction_mask, target_mask).sum()
-
-        # 计算Dice系数
-        dice = (2.0 * intersection) / (union + intersection)
-
-        dice_scores.append(dice)
-
-    return dice_scores
-
-
 def dice_coefficient(prediction, target, class_num = 14):
     dice_coefficient = []
 
@@ -32,7 +11,6 @@ def dice_coefficient(prediction, target, class_num = 14):
         dice_coefficient.append(dice_cls)
 
     return dice_coefficient
-
 
 def jaccard_coefficient(prediction, target, slice,class_num = 14 ):
 
@@ -55,6 +33,7 @@ def calculate_metrics(pred_folder, label_folder):
     class_accuracy = [0.0] * 13
     num_samples = 14   
     jaccard_scores = []
+    num_classes = 14
 
     dice_lists = {}
     dice_lists['dice1'] = []
@@ -75,7 +54,7 @@ def calculate_metrics(pred_folder, label_folder):
         pred = sitk.GetArrayFromImage(sitk.ReadImage(pred_path))
         label = sitk.GetArrayFromImage(sitk.ReadImage(label_path))
         
-        dice_scores = dice_coefficient(pred, label, 14)
+        dice_scores = dice_coefficient(pred, label, num_classes)
         accuracy_lists.append(dice_scores)
         for class_id, dice_score in enumerate(dice_scores, start=1):
             print(f"Class {class_id} Dice Score: {dice_score*100:.2f}")
@@ -99,7 +78,7 @@ def calculate_metrics(pred_folder, label_folder):
     print(dice_lists['dice13'])
 
     for accuracy_list in accuracy_lists:
-        for class_id in range(13):
+        for class_id in range(num_classes-1):
             class_accuracy[class_id] += accuracy_list[class_id]
 
     # 计算每个类别的平均精度
