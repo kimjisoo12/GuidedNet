@@ -32,12 +32,12 @@ def jaccard_coefficient(prediction, target, slice,class_num = 14 ):
 def calculate_metrics(pred_folder, label_folder):
     pred_files = [os.path.join(pred_folder, file) for file in os.listdir(pred_folder)]
     label_files = [os.path.join(label_folder, file) for file in os.listdir(label_folder)]
-
+    
     accuracy_lists = []
-    class_accuracy = [0.0] * 15
-    num_samples = 60
     jaccard_scores = []
+    num_samples = 60   
     num_classes = 16
+    class_accuracy = [0.0] * （num_classes-1）
 
     for pred_path, label_path in zip(pred_files, label_files):
         pred = sitk.GetArrayFromImage(sitk.ReadImage(pred_path))
