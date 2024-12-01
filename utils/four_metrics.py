@@ -30,10 +30,11 @@ def calculate_metrics(pred_folder, label_folder):
     label_files = [os.path.join(label_folder, file) for file in os.listdir(label_folder)]
 
     accuracy_lists = []
-    class_accuracy = [0.0] * 13
-    num_samples = 14   
     jaccard_scores = []
+    num_samples = 14   
     num_classes = 14
+    class_accuracy = [0.0] * （num_classes-1）
+
 
     dice_lists = {}
     dice_lists['dice1'] = []
